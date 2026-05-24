@@ -1,9 +1,13 @@
+import os
 import numpy as np
 import scipy.io.wavfile as wav
 
 sample_rate = 44100
 
-# Багатий синтетичний ПЕД (Rich Pad)
+output_dir = "audio"
+os.makedirs(output_dir, exist_ok=True)
+
+# Rich Pad
 
 t_pad = np.linspace(0, 4.0, int(sample_rate * 4.0), False)
 pad_signal = (
@@ -15,10 +19,11 @@ pad_signal = (
 pad_envelope = np.exp(-0.2 * t_pad)
 pad_signal = pad_signal * pad_envelope
 
-wav.write("test_rich_pad.wav", sample_rate, np.int16(pad_signal * 32767))
+pad_path = os.path.join(output_dir, "test_rich_pad.wav")
+wav.write(pad_path, sample_rate, np.int16(pad_signal * 32767))
 
 
-# Чистий Саб-бас 
+# Sub-Bass
 t_bass = np.linspace(0, 4.0, int(sample_rate * 4.0), False)
 bass_signal = np.sin(2 * np.pi * 50 * t_bass)
 
@@ -26,10 +31,11 @@ fade = np.linspace(0, 1, 2000)
 bass_signal[:2000] *= fade
 bass_signal[-2000:] *= fade[::-1]
 
-wav.write("test_sub_bass.wav", sample_rate, np.int16(bass_signal * 32767))
+bass_path = os.path.join(output_dir, "test_sub_bass.wav")
+wav.write(bass_path, sample_rate, np.int16(bass_signal * 32767))
 
 
-# Імпульси з тишею (Sparse Staccato)
+# Sparse Staccato
 t_total = 4.0
 sparse_signal = np.zeros(int(sample_rate * t_total))
 
@@ -43,4 +49,5 @@ for start_t in intervals:
     end_idx = start_idx + len(beep)
     sparse_signal[start_idx:end_idx] = beep
 
-wav.write("test_sparse.wav", sample_rate, np.int16(sparse_signal * 32767))
+sparse_path = os.path.join(output_dir, "test_sparse.wav")
+wav.write(sparse_path, sample_rate, np.int16(sparse_signal * 32767))

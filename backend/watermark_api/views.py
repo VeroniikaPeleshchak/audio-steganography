@@ -124,7 +124,7 @@ def check_audio(request):
             return Response({"error": "Трек не знайдено."}, status=404)
     else:
         if not suspect_file:
-            return Response({"error": "Вкажіть ID або файл!"}, status=400)
+            return Response({"error": "Вкажіть ID або файл"}, status=400)
         fs = FileSystemStorage(location=temp_dir)
         filename = fs.save(suspect_file.name, suspect_file)
         suspect_path = fs.path(filename)
@@ -340,4 +340,4 @@ def run_benchmark(request):
 
 @api_view(['GET'])
 def test_connection(request):
-    return Response({"message": "Зв'язок встановлено! Бекенд готовий приймати аудіо."})
+    return Response({"message": "Зв'язок встановлено"})

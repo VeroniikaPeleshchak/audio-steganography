@@ -72,7 +72,7 @@ def generate_report_content(data, track_id):
     ecc_type = "Хеммінга" if 'lsb' in data.get('algorithm', '') else "Ріда-Соломона"
     
     report = f"===============================================\n"
-    report += f"     ОФІЦІЙНИЙ ЗВІТ ЕКСПЕРТИЗИ СТЕГОКОНТЕЙНЕРА\n"
+    report += f"     ЗВІТ ЕКСПЕРТИЗИ СТЕГОКОНТЕЙНЕРА\n"
     report += f"===============================================\n"
     report += f"Дата генерації: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
     report += f"ID Треку: {track_id if track_id else 'Сторонній файл'}\n"
@@ -89,7 +89,6 @@ def generate_report_content(data, track_id):
     report += f"Пікова якість (PSNR):        {data.get('psnr', 'N/A')} dB\n"
     report += f"Час роботи алгоритму:        {data.get('execution_time', 'N/A')} сек\n"
     report += f"===============================================\n"
-    report += f"Згенеровано системою Audio Watermark Studio\n"
     return report
 
 
@@ -101,7 +100,7 @@ if page == "Вбудовування":
         st.markdown("#### 1. Налаштування захисту")
         uploaded_file = st.file_uploader("Оберіть .wav або .mp3 файл", type=["wav", "mp3"])
         watermark_text = st.text_input("Секретний текст:", "secretText")
-        algo_choice = st.radio("Оберіть алгоритм:", ["DWT+SVD (Основний)", "LSB (Вразливий)"])
+        algo_choice = st.radio("Оберіть алгоритм:", ["DWT+SVD", "LSB"])
         
         use_ecc = st.toggle("Увімкнути завадостійке кодування (ECC: Хеммінг або Рід-Соломон)", value=True, help="Автоматично виправляє помилки від шуму.")
         submit_btn = st.button("🚀 Захистити файл", type="primary", use_container_width=True)
@@ -129,7 +128,7 @@ if page == "Вбудовування":
     st.markdown("---")
 
     if submit_btn and uploaded_file and watermark_text:
-        with st.spinner("Математична обробка..."):
+        with st.spinner("Обробка..."):
             try:
                 file_bytes = uploaded_file.getvalue()
                 filename = uploaded_file.name
@@ -189,7 +188,7 @@ elif page == "Експертиза":
         if not track_id and suspect_file is None:
             st.warning("Введіть ID або завантажте файл.")
         else:
-            with st.spinner("Комплексне дешифрування..."):
+            with st.spinner("Дешифрування..."):
                 try:
                     files = {}
                     if suspect_file: 
@@ -268,7 +267,7 @@ elif page == "Авто-Бенчмарк":
                         results = res.json().get('benchmark_results', [])
                         df = pd.DataFrame(results)
                         
-                        st.success("✅ Аналіз успішно завершено!")
+                        st.success("Аналіз успішно завершено!")
                         st.dataframe(df, use_container_width=True)
                         
                         csv = df.to_csv(index=False).encode('utf-8')
